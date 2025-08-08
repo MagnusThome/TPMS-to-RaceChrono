@@ -54,7 +54,6 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
         pressureBAR[s] = pressurePSI[s] / 14.5038;
         temperature[s] = strManufacturerData[2];
         voltage[s] = (float)strManufacturerData[1] / 10.0;
-        lastupdate[s] = millis();
         updated[s] = true;
       }
     }
@@ -75,7 +74,6 @@ void startTpms() {
 
 
 void checkTpms() {
-  unsigned long loopnow = millis();
   BLEScanResults *foundDevices = pBLEScan->start(scanTime, false);
 //Serial.print("Devices found: ");
 //Serial.println(foundDevices->getCount());
@@ -92,11 +90,14 @@ void checkTpms() {
       Serial.print(voltage[s]);
       Serial.print("V   ");    
       Serial.println();    
+      lastupdate[s] = millis();
       updated[s] = false;
     }
+    unsigned long loopnow = millis();
     if (loopnow - lastupdate[s] >= 1000*60*5) {
       Serial.print(pos_id[s]);
       Serial.println(" no signal for 5 minutes");
+      lastupdate[s] = millis();
       temperature[s] = 0;
     }
     
