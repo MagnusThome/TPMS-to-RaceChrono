@@ -96,7 +96,7 @@ void checkTpms() {
     unsigned long loopnow = millis();
     if (loopnow - lastupdate[s] >= 1000*60*5) {
       Serial.print(pos_id[s]);
-      Serial.println(" no signal for 5 minutes");
+      Serial.println("no signal for 5 minutes");
       lastupdate[s] = millis();
       temperature[s] = 0;
     }
