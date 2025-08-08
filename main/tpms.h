@@ -25,6 +25,7 @@ int temperature[NUMSENSORS];    // sensor temperature in °C     (int)
 float pressurePSI[NUMSENSORS];  // sensor pressure PSI          (float)
 float pressureBAR[NUMSENSORS];  // sensor pressure BAR          (float)
 bool updated[NUMSENSORS]; 
+unsigned long lastupdate[NUMSENSORS];
 
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
   void onResult(BLEAdvertisedDevice advertisedDevice) {
@@ -53,6 +54,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
         pressureBAR[s] = pressurePSI[s] / 14.5038;
         temperature[s] = strManufacturerData[2];
         voltage[s] = (float)strManufacturerData[1] / 10.0;
+        lastupdate[s] = millis();
         updated[s] = true;
       }
     }
@@ -73,12 +75,14 @@ void startTpms() {
 
 
 void checkTpms() {
+  unsigned long loopnow = millis();
   BLEScanResults *foundDevices = pBLEScan->start(scanTime, false);
 //Serial.print("Devices found: ");
 //Serial.println(foundDevices->getCount());
   pBLEScan->clearResults();  // delete results fromBLEScan buffer to release memory
 
   for (int s=0; s<NUMSENSORS; s++) {
+    
     if (updated[s]) {
       Serial.print(pos_id[s]);
       Serial.print(pressureBAR[s]); 
@@ -90,6 +94,12 @@ void checkTpms() {
       Serial.println();    
       updated[s] = false;
     }
+    if (loopnow - lastupdate[s] >= 1000*60*5) {
+      Serial.print(pos_id[s]);
+      Serial.println(" no signal for 5 minutes");
+      temperature[s] = 0;
+    }
+    
   }
   delay(50);
 }
