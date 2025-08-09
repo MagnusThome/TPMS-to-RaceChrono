@@ -30,7 +30,9 @@ unsigned long lastupdate[NUMSENSORS];
 class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
   void onResult(BLEAdvertisedDevice advertisedDevice) {
 
-    //Serial.printf("%s \n", advertisedDevice.toString().c_str()); // print all the received data to serial
+    if (advertisedDevice.getRSSI() > -60) { // Only view closeby devices
+      //Serial.printf("%s \n", advertisedDevice.toString().c_str()); // print all the received data to serial
+    }
   
     for (int s=0; s<NUMSENSORS; s++) {
       if (  
@@ -51,7 +53,7 @@ class MyAdvertisedDeviceCallbacks : public BLEAdvertisedDeviceCallbacks {
         // 14 74 - checksum - ignore for now  
   
         pressurePSI[s] = (float)((uint16_t)strManufacturerData[3] << 8 | strManufacturerData[4]) / 10.0; 
-        pressureBAR[s] = pressurePSI[s] / 14.5038;
+        pressureBAR[s] = (pressurePSI[s] / 14.5038) -1;
         temperature[s] = strManufacturerData[2];
         voltage[s] = (float)strManufacturerData[1] / 10.0;
         updated[s] = true;
