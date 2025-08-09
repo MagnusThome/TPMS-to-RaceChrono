@@ -42,5 +42,7 @@ The four tyre *temperature* channels have the follwing PIDs
 0x0A (10) = RL Rear Left  
 0x0B (11) = RR Rear Right  
 Note the "Equation" also in the picture    
+
+When a sensor hasn't reported anything in five minutes an "alarm" is raised by reporting the temperature as 0 degrees but the previous older read of pressure is kept.
   
 <img width="400" src="https://github.com/user-attachments/assets/04dd2139-6c74-41ba-9762-cf8261e29d31" />
