@@ -25,7 +25,7 @@ boolean isCanBusConnected = false;
 uint8_t tempData[20];
 unsigned long lastSendTime = 0;
 unsigned long lastNotifyTime = 0;
-const long sendInterval = 20; // 20 ms = 50 Hz
+const long sendInterval = 1000; // 1 Hz
 
 
 class FilterCallback : public BLECharacteristicCallbacks {
